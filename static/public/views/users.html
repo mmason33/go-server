@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Users Service</h1>
+    <h5>Add User</h5>
+    <form class="form">
+      <input type="text" placeholder="Name" name="name"/>
+      <input type="number" placeholder="Age" name="age"/>
+      <button type="submit">Add User</button>
+    </form>
+    <div class="users">
+      <h5>User List</h5>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Age</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <script>
+      fetch('/api/v1/users').then(data => {
+        console.log(data)
+        data.json().then(d => {
+          d.users.forEach(u => {
+            appendTable(u.name, u.age);
+          });
+        });
+      });
+
+      const form = document.querySelector('.form');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        console.log(e.target.elements)
+        const name = e.target.elements['name'].value;
+        const age = e.target.elements['age'].value;
+        fetch(`/api/v1/users?name=${name}&age=${age}`, {
+          method: 'POST'
+        }).then(d => {
+          appendTable(name, age)
+          form.reset();
+        });
+      });
+
+      function appendTable(name, age) {
+        const table = document.querySelector('.table').querySelector('tbody');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${name}</td><td>${age}</td>`
+        table.appendChild(tr);
+      }
+    </script>
+  </body>
+</html>

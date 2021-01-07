@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/template/html"
 )
 
 var (
@@ -24,19 +25,25 @@ func main() {
 	// Connected with database
 	database.Connect(dialect, dbStr)
 	// database.GetAll("users")
-	database.Insert("users", map[string]interface{}{
-		"name": "Guy",
-		"age":  40,
-	})
+	// database.Insert("users", map[string]interface{}{
+	// 	"name": "Guy",
+	// 	"age":  40,
+	// })
+	engine := html.New("./static/public/views", ".html")
 
 	// Create fiber app
 	app := fiber.New(fiber.Config{
 		Prefork: *prod, // go run app.go -prod
+		Views:   engine,
 	})
 
 	// Middleware
 	app.Use(recover.New())
 	app.Use(logger.New())
+
+	// Web Views
+	app.Get("/", handlers.IndexPage)
+	app.Get("/users", handlers.UsersPage)
 
 	// Create a /api/v1 endpoint
 	v1 := app.Group("/api/v1")

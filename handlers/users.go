@@ -5,9 +5,13 @@ import (
 	"github.com/mmason33/go-project/database"
 )
 
+func UsersPage(c *fiber.Ctx) error {
+	return c.Render("users", fiber.Map{})
+}
+
 // UserGet returns a user
 func UserList(c *fiber.Ctx) error {
-	users := database.GetAll("users")
+	users := database.Get("users")
 	return c.JSON(fiber.Map{
 		"success": true,
 		"users":   users,
@@ -16,10 +20,12 @@ func UserList(c *fiber.Ctx) error {
 
 // UserCreate registers a user
 func UserCreate(c *fiber.Ctx) error {
-	// user := &models.User{
-	// 	Name: c.FormValue("user"),
-	// }
-	// database.Insert(user)
+	user := map[string]interface{}{
+		"name": c.FormValue("name"),
+		"age":  c.FormValue("age"),
+	}
+
+	database.Insert("users", user)
 	return c.JSON(fiber.Map{
 		"success": true,
 		"user":    "user",

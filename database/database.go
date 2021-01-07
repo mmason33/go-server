@@ -24,7 +24,7 @@ func Connect(dbDialect string, dbStr string) {
 	fmt.Println("Connected to:", version)
 }
 
-func GetAll(tableName string) []interface{} {
+func Get(tableName string) []interface{} {
 	// Execute the query
 	rows, err := dbRef.Query("SELECT * FROM " + tableName)
 	if err != nil {
